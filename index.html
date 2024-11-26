@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Gold and Silver Rates</title>
+</head>
+<body>
+  <h1>Live Gold and Silver Rates</h1>
+  
+  <div id="rates-container">
+    <!-- Dynamic rate data will appear here -->
+  </div>
+
+  <script>
+    // Function to fetch live rates and update the DOM
+    async function fetchLiveRates() {
+      try {
+        const response = await fetch('http://localhost:5000/api/getLiveRates');
+        const data = await response.json();
+
+        // Clear the current data
+        const container = document.getElementById('rates-container');
+        container.innerHTML = '';
+
+        // Display the new data
+        data.forEach(rate => {
+          const rateElement = document.createElement('div');
+          rateElement.innerHTML = `
+            <h3>${rate.item}</h3>
+            <p><strong>Code:</strong> ${rate.code}</p>
+            <p><strong>Buy:</strong> ${rate.prices.buy}</p>
+            <p><strong>Sell:</strong> ${rate.prices.sell}</p>
+            <p><strong>High:</strong> ${rate.prices.high}</p>
+            <p><strong>Low:</strong> ${rate.prices.low}</p>
+            <hr>
+          `;
+          container.appendChild(rateElement);
+        });
+      } catch (error) {
+        console.error('Error fetching live rates:', error);
+      }
+    }
+
+    // Fetch live rates every 5 seconds
+    setInterval(fetchLiveRates, 5000);
+
+    // Initial fetch when the page loads
+    fetchLiveRates();
+  </script>
+</body>
+</html>
